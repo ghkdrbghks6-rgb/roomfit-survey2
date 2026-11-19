@@ -1,0 +1,397 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>심전생활관 룸메이트 만족도 조사</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700;800&display=swap">
+<style>
+  :root{
+    --navy:#16294A; --navy-2:#24406f; --navy-soft:#e8edf5; --ink:#1b2333; --sub:#5b6577;
+    --line:#dfe4ec; --bg:#f4f6fa; --card:#fff; --accent:#2f6fd6; --ok:#1f8a5b; --warn:#c2410c;
+  }
+  *{box-sizing:border-box}
+  html,body{margin:0;background:var(--bg);color:var(--ink);font-family:"Noto Sans KR",system-ui,-apple-system,sans-serif;-webkit-font-smoothing:antialiased}
+  button{font:inherit;cursor:pointer}
+  .wrap{max-width:560px;margin:0 auto;padding:20px 16px 120px;min-height:100vh}
+  .wide .wrap{max-width:980px}
+  header.top{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:18px}
+  .brand{display:flex;align-items:center;gap:10px;font-weight:700;color:var(--navy);font-size:15px}
+  .logo{width:32px;height:32px;border-radius:9px;background:var(--navy);display:grid;place-items:center;color:#fff;font-weight:800;font-size:14px}
+  .tab-btn{border:1px solid var(--line);background:#fff;color:var(--navy);padding:7px 12px;border-radius:999px;font-size:13px;font-weight:500}
+  .tab-btn[hidden]{display:none}
+  .card{background:var(--card);border:1px solid var(--line);border-radius:18px;padding:26px 22px;box-shadow:0 1px 2px rgba(22,41,74,.04)}
+  .hero{background:var(--navy);color:#fff;border:none;padding:30px 24px}
+  .hero .kicker{font-size:12px;letter-spacing:.08em;opacity:.7;font-weight:500}
+  .hero h1{margin:8px 0 14px;font-size:24px;line-height:1.35;font-weight:800}
+  .hero p{margin:0 0 10px;font-size:14.5px;line-height:1.7;opacity:.9}
+  .meta{display:flex;gap:8px;flex-wrap:wrap;margin:18px 0 4px}
+  .chip{background:rgba(255,255,255,.12);border-radius:999px;padding:6px 11px;font-size:12.5px}
+  .btn{display:inline-flex;align-items:center;justify-content:center;gap:6px;border:none;border-radius:12px;padding:14px 20px;font-weight:700;font-size:15.5px;background:var(--navy);color:#fff;min-width:110px}
+  .btn:disabled{background:#b8c1d1;cursor:not-allowed}
+  .btn.light{background:#fff;color:var(--navy);border:1px solid var(--line)}
+  .btn.white{background:#fff;color:var(--navy)}
+  .btn.block{width:100%}
+  .progress{height:6px;background:var(--navy-soft);border-radius:99px;overflow:hidden;margin:4px 0 8px}
+  .progress i{display:block;height:100%;background:var(--navy);border-radius:99px;transition:width .3s}
+  .step-meta{display:flex;justify-content:space-between;font-size:12.5px;color:var(--sub);margin-bottom:14px}
+  .section{display:inline-block;font-size:12px;font-weight:700;color:var(--accent);background:#eaf1fd;padding:4px 10px;border-radius:999px;margin-bottom:12px}
+  .q{font-size:19px;font-weight:700;line-height:1.5;margin:0 0 6px}
+  .hint{font-size:13px;color:var(--sub);margin:0 0 18px}
+  .opts{display:flex;flex-direction:column;gap:9px}
+  .opt{display:flex;align-items:center;gap:12px;text-align:left;width:100%;background:#fff;border:1.5px solid var(--line);border-radius:12px;padding:14px 15px;font-size:15px;color:var(--ink);transition:border-color .15s,background .15s}
+  .opt:hover{border-color:#b9c4d6}
+  .opt .mark{flex:none;width:20px;height:20px;border:2px solid #b9c4d6;border-radius:50%;display:grid;place-items:center}
+  .opt.multi .mark{border-radius:6px}
+  .opt.on{border-color:var(--navy);background:var(--navy-soft);font-weight:500}
+  .opt.on .mark{border-color:var(--navy);background:var(--navy)}
+  .opt.on .mark::after{content:"";width:8px;height:8px;border-radius:50%;background:#fff}
+  .opt.multi.on .mark::after{width:10px;height:6px;border-radius:0;background:none;border-left:2.5px solid #fff;border-bottom:2.5px solid #fff;transform:rotate(-45deg) translate(1px,-1px)}
+  .opt.dim{opacity:.45}
+  .num{font-size:12px;color:var(--sub);margin-left:auto}
+  .likert{display:grid;grid-template-columns:repeat(5,1fr);gap:6px}
+  .lk{background:#fff;border:1.5px solid var(--line);border-radius:12px;padding:12px 2px 10px;display:flex;flex-direction:column;align-items:center;gap:7px;font-size:11.5px;color:var(--sub);line-height:1.3;text-align:center;min-height:92px}
+  .lk b{width:30px;height:30px;border-radius:50%;display:grid;place-items:center;background:var(--navy-soft);color:var(--navy);font-size:14px}
+  .lk.on{border-color:var(--navy);background:var(--navy-soft);color:var(--navy);font-weight:700}
+  .lk.on b{background:var(--navy);color:#fff}
+  input[type=text],textarea{width:100%;border:1.5px solid var(--line);border-radius:12px;padding:14px;font:inherit;font-size:16px;color:var(--ink);background:#fff;outline:none}
+  input[type=text]:focus,textarea:focus{border-color:var(--navy)}
+  textarea{min-height:150px;resize:vertical;line-height:1.6}
+  .etc{margin-top:8px}
+  .err{color:var(--warn);font-size:13px;margin-top:10px;min-height:18px}
+  .nav{position:fixed;left:0;right:0;bottom:0;background:rgba(244,246,250,.94);backdrop-filter:blur(8px);border-top:1px solid var(--line);padding:12px 16px calc(12px + env(safe-area-inset-bottom))}
+  .nav .in{max-width:560px;margin:0 auto;display:flex;gap:10px}
+  .nav .btn{flex:1}
+  .nav .btn.light{flex:0 0 96px}
+  .done{text-align:center;padding:40px 22px}
+  .done .ic{width:64px;height:64px;border-radius:50%;background:#e3f4ec;color:var(--ok);display:grid;place-items:center;margin:0 auto 16px;font-size:30px;font-weight:800}
+  .done h2{margin:0 0 10px;font-size:21px}
+  .done p{color:var(--sub);line-height:1.7;margin:0 0 6px;font-size:14.5px}
+  .note{font-size:12.5px;color:var(--sub);background:#fff8ec;border:1px solid #f3dfb8;border-radius:12px;padding:12px 14px;line-height:1.6;margin-top:14px}
+  .foot{text-align:center;font-size:12px;color:var(--sub);margin-top:22px}
+  /* admin */
+  .kpis{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:14px}
+  .kpi{background:#fff;border:1px solid var(--line);border-radius:14px;padding:14px}
+  .kpi .l{font-size:12px;color:var(--sub)}
+  .kpi .v{font-size:24px;font-weight:800;color:var(--navy);margin-top:4px;font-variant-numeric:tabular-nums}
+  .kpi .s{font-size:11.5px;color:var(--sub);margin-top:2px}
+  .grid2{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+  .panel{background:#fff;border:1px solid var(--line);border-radius:16px;padding:18px;margin-bottom:14px}
+  .panel h3{margin:0 0 4px;font-size:15px}
+  .panel .d{font-size:12px;color:var(--sub);margin:0 0 14px}
+  .bar-row{display:grid;grid-template-columns:150px 1fr 46px;align-items:center;gap:10px;font-size:13px;margin-bottom:9px}
+  .bar-row .lab{color:var(--ink);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .bar{height:14px;background:var(--navy-soft);border-radius:4px;overflow:hidden}
+  .bar i{display:block;height:100%;background:var(--navy);border-radius:4px}
+  .bar.alt i{background:#7a93bd}
+  .bar-row .val{text-align:right;font-variant-numeric:tabular-nums;font-weight:700;color:var(--navy)}
+  .cmp{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+  .cmp .box{border:1px solid var(--line);border-radius:12px;padding:14px;text-align:center}
+  .cmp .box .v{font-size:26px;font-weight:800;color:var(--navy)}
+  .cmp .box .l{font-size:12.5px;color:var(--sub)}
+  .texts{max-height:340px;overflow:auto;display:flex;flex-direction:column;gap:8px}
+  .texts div{background:var(--bg);border-radius:10px;padding:10px 12px;font-size:13.5px;line-height:1.6}
+  .texts small{display:block;color:var(--sub);font-size:11.5px;margin-top:4px}
+  .admin-actions{display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin-bottom:14px}
+  .admin-actions .btn{min-width:0;padding:10px 14px;font-size:13.5px}
+  .muted{color:var(--sub);font-size:13px}
+  .empty{padding:40px;text-align:center;color:var(--sub)}
+  @media (max-width:720px){.kpis{grid-template-columns:1fr 1fr}.grid2{grid-template-columns:1fr}.bar-row{grid-template-columns:110px 1fr 40px}}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header class="top">
+    <div class="brand"><div class="logo">심</div>강남대학교 심전생활관</div>
+    <button class="tab-btn" id="adminToggle" hidden>결과 보기</button>
+  </header>
+  <main id="app"></main>
+</div>
+<div class="nav" id="nav" hidden><div class="in">
+  <button class="btn light" id="prevBtn">이전</button>
+  <button class="btn" id="nextBtn">다음</button>
+</div></div>
+
+<script>
+/* ---------- 문항 정의 (HWP 원본 그대로) ---------- */
+const AGREE = ["전혀 그렇지 않다","그렇지 않다","보통","그렇다","매우 그렇다"];
+const FAVOR = ["매우 반대한다","반대한다","보통","찬성한다","매우 찬성한다"];
+const Q = [
+  {id:"q1", sec:"기본사항", type:"text", text:"학번을 입력해주세요", hint:"숫자만 입력해주세요.", placeholder:"예: 202612345"},
+  {id:"q2", sec:"기본사항", type:"single", text:"2026학년도 2학기 룸메이트 배정을 위한 생활패턴 설문조사에 참여하셨습니까?", options:["참여","미참여"]},
+  {id:"q3", sec:"룸메이트 생활습관 적합도", type:"likert", scale:AGREE, short:"취침·기상 시간", text:"룸메이트와 취침 및 기상 시간이 잘 맞았다."},
+  {id:"q4", sec:"룸메이트 생활습관 적합도", type:"likert", scale:AGREE, short:"청결·정리정돈", text:"룸메이트와 청결 및 정리정돈 기준이 잘 맞았다."},
+  {id:"q5", sec:"룸메이트 생활습관 적합도", type:"likert", scale:AGREE, short:"소음 습관", text:"룸메이트와 소음관련 습관(통화·영상 시청 등)이 잘 맞았다."},
+  {id:"q6", sec:"룸메이트 생활습관 적합도", type:"likert", scale:AGREE, short:"귀가·호실 이용", text:"룸메이트와 귀가 시간 및 호실 이용 패턴이 잘 맞았다."},
+  {id:"q7", sec:"룸메이트 생활습관 적합도", type:"likert", scale:AGREE, short:"성격·의사소통", text:"룸메이트와 성격 및 의사소통 방식이 잘 맞았다."},
+  {id:"q8", sec:"룸메이트 생활습관 적합도", type:"likert", scale:AGREE, short:"냄새 관련 습관", text:"룸메이트와 흡연·음식·향수 등 냄새에 대한 생활습관이나 허용 수준이 잘 맞았다."},
+  {id:"q9", sec:"룸메이트 배정 결과 평가", type:"likert", scale:AGREE, short:"전반적 만족도", text:"이번 학기 배정된 룸메이트에 전반적으로 만족한다."},
+  {id:"q10", sec:"룸메이트 배정 결과 평가", type:"multi", max:2, exclusive:"불편사항 없음", text:"룸메이트와 생활하면서 경험한 주요 불편사항은 무엇입니까?", hint:"최대 2개까지 선택할 수 있어요.",
+    options:["취침·기상 시간 차이","코골이·이갈이 등 수면 중 소음","청결 및 정리정돈 문제","통화·영상 시청 등 생활소음","늦은 귀가 및 생활시간 차이","흡연·음식·향수 등 냄새","성격 및 의사소통 문제","불편사항 없음","기타"]},
+  {id:"q11", sec:"룸메이트 배정 기준 개선", type:"single", text:"향후 룸메이트 배정 시 가장 우선적으로 고려해야 할 요소는 무엇이라고 생각합니까?", hint:"1개만 선택해주세요.",
+    options:["수면습관","청결습관","소음 민감도 및 생활소음","귀가 시간 및 생활패턴","흡연 여부 및 냄새 민감도","성격 및 의사소통 방식","기타"]},
+  {id:"q12", sec:"룸메이트 배정 기준 개선", type:"likert", scale:FAVOR, short:"설문 기반 배정 찬성도", text:"향후 생활습관 설문조사를 활용하여 룸메이트를 배정하는 방식에 대해 어떻게 생각하십니까?"},
+  {id:"q13", sec:"룸메이트 배정 기준 개선", type:"long", optional:true, text:"향후 룸메이트 배정 방식에서 개선이 필요하다고 생각하는 사항이 있다면 자유롭게 작성해 주세요.", hint:"선택 문항입니다. 비워두셔도 제출할 수 있어요.", placeholder:"자유롭게 작성해 주세요"}
+];
+
+/* ---------- 상태 ---------- */
+let step = -1;               // -1 = 첫 화면, Q.length = 제출 완료
+let ans = {};                // {q1:"..", q10:[..], q10_etc:"..", ...}
+/* ▼▼▼ 구글 Apps Script 웹 앱 주소를 여기에 붙여넣으세요 ▼▼▼ */
+const API_URL = "https://script.google.com/macros/s/AKfycbwHF4HdrzPCG-buf4YZf018KVc39Z7F-2fNw9mXMELg-e7BoRxrimMp-Px_BQFemuza/exec";
+/* ▲▲▲ ---------------------------------------------- ▲▲▲ */
+let adminKey = "";
+let view = "survey";         // survey | admin
+let rows = [], unsub = null, adminLoaded = false, adminTimer = null;
+const $ = s => document.querySelector(s);
+const app = $("#app"), nav = $("#nav"), prevBtn = $("#prevBtn"), nextBtn = $("#nextBtn");
+const esc = s => String(s ?? "").replace(/[&<>"']/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+
+/* ---------- 설문 화면 ---------- */
+function render(){
+  document.body.classList.toggle("wide", view === "admin");
+  if (view === "admin") return renderAdmin();
+  nav.hidden = !(step >= 0 && step < Q.length);
+  if (step === -1) return renderIntro();
+  if (step >= Q.length) return renderDone();
+  renderQ();
+}
+
+function renderIntro(){
+  app.innerHTML = `
+    <section class="card hero">
+      <div class="kicker">2026학년도 2학기</div>
+      <h1>룸메이트 배정 만족도 및<br>운영 개선 설문조사</h1>
+      <p>안녕하십니까? 강남대학교 심전생활관 행정실입니다.</p>
+      <p>본 설문조사는 2026학년도 2학기 룸메이트 미신청자를 대상으로 실시한 생활패턴 기반 룸메이트 배정 방식의 운영 결과를 평가하고, 향후 배정 방식의 지속 운영 여부 및 개선 방향을 검토하기 위해 실시합니다.</p>
+      <p>응답 내용은 룸메이트 배정 방식의 평가 및 개선 목적으로만 활용됩니다. 솔직한 답변을 부탁드립니다.</p>
+      <div class="meta"><span class="chip">총 13문항</span><span class="chip">약 3분 소요</span><span class="chip">평가·개선 목적 외 미활용</span></div>
+      <div style="margin-top:22px"><button class="btn white block" id="startBtn">설문 시작하기</button></div>
+    </section>
+    <div class="foot">강남대학교 심전생활관장</div>`;
+  $("#startBtn").onclick = () => { step = 0; render(); window.scrollTo(0,0); };
+}
+
+function renderQ(){
+  const q = Q[step], v = ans[q.id];
+  let body = "";
+  if (q.type === "text"){
+    body = `<input type="text" id="inp" inputmode="numeric" autocomplete="off" maxlength="12" placeholder="${q.placeholder}" value="${esc(v||"")}">`;
+  } else if (q.type === "long"){
+    body = `<textarea id="inp" maxlength="1000" placeholder="${q.placeholder}">${esc(v||"")}</textarea>`;
+  } else if (q.type === "likert"){
+    body = `<div class="likert">${q.scale.map((s,i)=>`<button class="lk ${v===i+1?"on":""}" data-v="${i+1}"><b>${i+1}</b>${s}</button>`).join("")}</div>`;
+  } else {
+    const multi = q.type === "multi", sel = multi ? (v||[]) : v;
+    body = `<div class="opts">${q.options.map(o=>{
+      const on = multi ? sel.includes(o) : sel === o;
+      const full = multi && !on && (sel.length >= q.max || sel.includes(q.exclusive));
+      return `<button class="opt ${multi?"multi":""} ${on?"on":""} ${full?"dim":""}" data-o="${esc(o)}"><span class="mark"></span>${esc(o)}</button>`;
+    }).join("")}</div>
+    ${needsEtc(q) ? `<input type="text" class="etc" id="etc" maxlength="100" placeholder="기타 내용을 적어주세요" value="${esc(ans[q.id+"_etc"]||"")}">` : ""}`;
+  }
+  app.innerHTML = `
+    <div class="progress"><i style="width:${(step+1)/Q.length*100}%"></i></div>
+    <div class="step-meta"><span>${step+1} / ${Q.length}</span><span>${q.optional?"선택":"필수"}</span></div>
+    <section class="card">
+      <span class="section">${q.sec}</span>
+      <h2 class="q">${step+1}. ${esc(q.text)}</h2>
+      ${q.hint ? `<p class="hint">${q.hint}</p>` : `<div style="height:12px"></div>`}
+      ${body}
+      <div class="err" id="err"></div>
+    </section>`;
+  prevBtn.disabled = false;
+  nextBtn.textContent = step === Q.length-1 ? "제출하기" : "다음";
+  nextBtn.disabled = false;
+
+  // 이벤트
+  const inp = $("#inp");
+  if (inp){
+    inp.oninput = () => { ans[q.id] = q.type==="text" ? inp.value.replace(/\D/g,"") : inp.value; if (q.type==="text") inp.value = ans[q.id]; };
+    if (q.type === "text") inp.onkeydown = e => { if (e.key==="Enter") next(); };
+  }
+  app.querySelectorAll(".lk").forEach(b => b.onclick = () => {
+    ans[q.id] = +b.dataset.v; renderQ();
+    setTimeout(()=>{ if (Q[step]===q) next(); }, 220);  // 선택하면 자동으로 다음
+  });
+  app.querySelectorAll(".opt").forEach(b => b.onclick = () => {
+    const o = b.dataset.o;
+    if (q.type === "single"){ ans[q.id] = o; }
+    else {
+      let s = [...(ans[q.id]||[])];
+      if (s.includes(o)) s = s.filter(x=>x!==o);
+      else if (o === q.exclusive) s = [o];
+      else { s = s.filter(x=>x!==q.exclusive); if (s.length >= q.max){ $("#err").textContent = `최대 ${q.max}개까지 선택할 수 있어요.`; return; } s.push(o); }
+      ans[q.id] = s;
+    }
+    renderQ();
+    const etc = $("#etc"); if (etc && o === "기타") etc.focus();
+  });
+  const etc = $("#etc"); if (etc) etc.oninput = () => ans[q.id+"_etc"] = etc.value;
+}
+
+function needsEtc(q){ const v = ans[q.id]; return q.type==="multi" ? (v||[]).includes("기타") : v === "기타"; }
+
+function validate(q){
+  const v = ans[q.id];
+  if (q.optional) return "";
+  if (q.type === "text"){ if (!v) return "학번을 입력해주세요."; if (v.length < 8 || v.length > 10) return "학번 자릿수를 확인해주세요."; return ""; }
+  if (q.type === "multi" ? !(v && v.length) : !v) return "응답을 선택해주세요.";
+  if (needsEtc(q) && !(ans[q.id+"_etc"]||"").trim()) return "기타 내용을 적어주세요.";
+  return "";
+}
+
+async function next(){
+  const q = Q[step], e = validate(q);
+  if (e){ $("#err").textContent = e; return; }
+  if (step < Q.length-1){ step++; render(); window.scrollTo(0,0); return; }
+  await submit();
+}
+prevBtn.onclick = () => { step--; render(); window.scrollTo(0,0); };
+nextBtn.onclick = next;
+
+async function submit(){
+  const err = $("#err");
+  if (!API_URL.startsWith("https://")){ err.textContent = "설문 저장 주소(API_URL)가 아직 설정되지 않았습니다."; return; }
+  nextBtn.disabled = true; prevBtn.disabled = true; nextBtn.textContent = "제출 중…";
+  const clean = {};
+  Q.forEach(q => { clean[q.id] = ans[q.id] ?? (q.type==="multi"?[]:""); if (needsEtc(q)) clean[q.id+"_etc"] = (ans[q.id+"_etc"]||"").trim(); });
+  try {
+    const res = await fetch(API_URL, { method:"POST", headers:{"Content-Type":"text/plain;charset=utf-8"}, body: JSON.stringify({answers: clean}) });
+    const out = await res.json();
+    if (!out.ok) throw new Error(out.error || "fail");
+    step = Q.length; render(); window.scrollTo(0,0);
+  } catch(e){
+    nextBtn.disabled = false; prevBtn.disabled = false; nextBtn.textContent = "제출하기";
+    err.textContent = "제출에 실패했습니다. 인터넷 연결을 확인하고 다시 눌러주세요.";
+  }
+}
+
+function renderDone(){
+  app.innerHTML = `<section class="card done">
+    <div class="ic">✓</div>
+    <h2>응답이 제출되었습니다</h2>
+    <p>끝까지 응답해 주셔서 대단히 감사합니다.</p>
+    <p>보내주신 의견은 다음 학기 룸메이트 배정 기준 개선에 활용하겠습니다.</p>
+    <div style="margin-top:22px"><button class="btn light" id="againBtn">처음 화면으로</button></div>
+  </section><div class="foot">강남대학교 심전생활관장</div>`;
+  $("#againBtn").onclick = () => { step = -1; render(); };
+}
+
+/* ---------- 관리자 결과 화면 ---------- */
+async function loadAdmin(){
+  adminLoaded = "loading"; render();
+  try {
+    const res = await fetch(API_URL + "?key=" + encodeURIComponent(adminKey));
+    const out = await res.json();
+    if (!out.ok){ adminKey = ""; adminLoaded = "denied"; render(); return; }
+    // 같은 학번이 여러 번 제출했으면 가장 마지막 응답만 집계
+    const latest = {};
+    out.rows.forEach(r => { const k = r.answers?.q1 || r.submittedAt; if (!latest[k] || latest[k].submittedAt <= r.submittedAt) latest[k] = r; });
+    rows = Object.values(latest); adminLoaded = true; adminTotal = out.rows.length;
+  } catch(e){ adminLoaded = "error"; }
+  render();
+}
+let adminTotal = 0;
+
+function renderLogin(){
+  app.innerHTML = `<section class="card" style="max-width:420px;margin:40px auto">
+    <h2 class="q">관리자 결과 보기</h2>
+    <p class="hint">Apps Script에 설정한 관리자 비밀번호를 입력하세요.</p>
+    <input type="text" id="pw" autocomplete="off" style="-webkit-text-security:disc" placeholder="비밀번호">
+    <div class="err" id="err">${adminLoaded==="denied"?"비밀번호가 맞지 않습니다.":adminLoaded==="error"?"결과를 불러오지 못했습니다.":""}</div>
+    <button class="btn block" id="loginBtn" style="margin-top:6px">확인</button>
+  </section>`;
+  const go = () => { adminKey = $("#pw").value.trim(); if (adminKey) loadAdmin(); };
+  $("#loginBtn").onclick = go; $("#pw").onkeydown = e => { if (e.key==="Enter") go(); };
+}
+
+function avg(list){ const a = list.filter(x=>typeof x==="number"); return a.length ? a.reduce((s,x)=>s+x,0)/a.length : null; }
+const f1 = x => x==null ? "–" : x.toFixed(2);
+function fmtDate(s){ if(!s) return ""; const d=new Date(s); return `${d.getMonth()+1}/${d.getDate()} ${String(d.getHours()).padStart(2,"0")}:${String(d.getMinutes()).padStart(2,"0")}`; }
+
+function renderAdmin(){
+  nav.hidden = true;
+  if (!adminKey || adminLoaded==="denied" || adminLoaded==="error") return renderLogin();
+  if (adminLoaded==="loading"){ app.innerHTML = `<div class="panel empty">응답을 불러오는 중…</div>`; return; }
+  const A = rows.map(r => r.answers || {});
+  const n = A.length;
+  const head = `<div class="admin-actions">
+      <h2 style="margin:0 auto 0 0;font-size:20px">응답 결과</h2>
+      <span class="muted">${adminTotal>rows.length?`중복 학번 ${adminTotal-rows.length}건은 마지막 응답만 집계`:""}</span>
+      <button class="btn light" id="reloadBtn">새로고침</button>
+      <button class="btn light" id="csvBtn">엑셀용 CSV 받기</button>
+    </div>`;
+  if (!n){ app.innerHTML = head + `<div class="panel empty">아직 제출된 응답이 없습니다.<br>설문 링크를 공유하면 응답이 여기에 바로 집계됩니다.</div>`; bindCsv(); return; }
+
+  const likerts = Q.filter(q=>q.type==="likert" && q.id!=="q12" && q.id!=="q9");
+  const sat = avg(A.map(a=>a.q9)), favor = avg(A.map(a=>a.q12));
+  const joined = A.filter(a=>a.q2==="참여"), notJ = A.filter(a=>a.q2==="미참여");
+  const fitAvg = a => avg(likerts.map(q=>a[q.id]));
+  const pct = (k,t) => t ? Math.round(k/t*100) : 0;
+
+  const fitRows = likerts.map(q => ({lab:q.short, v:avg(A.map(a=>a[q.id]))})).sort((a,b)=>b.v-a.v);
+  const count = (id, opts) => opts.map(o => ({lab:o, c:A.filter(a => Array.isArray(a[id]) ? a[id].includes(o) : a[id]===o).length})).sort((a,b)=>b.c-a.c);
+  const q10 = count("q10", Q[9].options), q11 = count("q11", Q[10].options);
+  const dist = id => [1,2,3,4,5].map(k => A.filter(a=>a[id]===k).length);
+  const satD = dist("q9");
+  const texts = rows.filter(r=>(r.answers?.q13||"").trim()).sort((a,b)=>(b.submittedAt||"").localeCompare(a.submittedAt||""));
+  const etcs = rows.flatMap(r=>[r.answers?.q10_etc, r.answers?.q11_etc].filter(Boolean));
+
+  const barList = (items, max, fmt, alt) => items.map(it=>`<div class="bar-row"><span class="lab" title="${esc(it.lab)}">${esc(it.lab)}</span><div class="bar ${alt?"alt":""}"><i style="width:${max? (it.v??it.c)/max*100 : 0}%"></i></div><span class="val">${fmt(it)}</span></div>`).join("");
+
+  app.innerHTML = head + `
+    <div class="kpis">
+      <div class="kpi"><div class="l">총 응답</div><div class="v">${n}</div><div class="s">명</div></div>
+      <div class="kpi"><div class="l">전반적 만족도 (9번)</div><div class="v">${f1(sat)}</div><div class="s">5점 만점 · 그렇다 이상 ${pct(A.filter(a=>a.q9>=4).length,n)}%</div></div>
+      <div class="kpi"><div class="l">설문 기반 배정 찬성 (12번)</div><div class="v">${pct(A.filter(a=>a.q12>=4).length,n)}%</div><div class="s">평균 ${f1(favor)}점</div></div>
+      <div class="kpi"><div class="l">생활패턴 설문 참여 (2번)</div><div class="v">${pct(joined.length,n)}%</div><div class="s">${joined.length}명 참여 · ${notJ.length}명 미참여</div></div>
+    </div>
+    <div class="grid2">
+      <div class="panel"><h3>생활습관 적합도 (3~8번)</h3><p class="d">항목별 평균 · 5점 만점, 높은 순</p>${barList(fitRows,5,it=>f1(it.v))}</div>
+      <div class="panel"><h3>생활패턴 설문 참여 여부별 비교</h3><p class="d">설문에 참여해 배정된 학생과 미참여 학생의 평균 점수</p>
+        <div class="cmp">
+          <div class="box"><div class="l">참여 (${joined.length}명)</div><div class="v">${f1(avg(joined.map(a=>a.q9)))}</div><div class="l">전반 만족도</div><div class="l" style="margin-top:6px">적합도 평균 ${f1(avg(joined.map(fitAvg)))}</div></div>
+          <div class="box"><div class="l">미참여 (${notJ.length}명)</div><div class="v">${f1(avg(notJ.map(a=>a.q9)))}</div><div class="l">전반 만족도</div><div class="l" style="margin-top:6px">적합도 평균 ${f1(avg(notJ.map(fitAvg)))}</div></div>
+        </div>
+        <p class="d" style="margin-top:14px">전반 만족도 분포 (9번)</p>
+        ${barList(AGREE.map((s,i)=>({lab:`${i+1} ${s}`, c:satD[i]})), Math.max(...satD,1), it=>it.c, true)}
+      </div>
+      <div class="panel"><h3>주요 불편사항 (10번)</h3><p class="d">복수 선택(최대 2개) · 응답자 수 기준</p>${barList(q10, Math.max(q10[0].c,1), it=>it.c)}</div>
+      <div class="panel"><h3>배정 시 최우선 고려 요소 (11번)</h3><p class="d">1개 선택</p>${barList(q11, Math.max(q11[0].c,1), it=>`${pct(it.c,n)}%`)}</div>
+    </div>
+    <div class="panel"><h3>개선 의견 (13번) · ${texts.length}건</h3><p class="d">서술형 응답, 최신순${etcs.length?` · 10·11번 '기타' 응답 ${etcs.length}건 포함`:""}</p>
+      <div class="texts">${texts.map(r=>`<div>${esc(r.answers.q13)}<small>${fmtDate(r.submittedAt)}</small></div>`).join("") || `<span class="muted">아직 작성된 의견이 없습니다.</span>`}
+      ${etcs.map(t=>`<div>${esc(t)}<small>기타 응답</small></div>`).join("")}</div>
+    </div>`;
+  bindCsv();
+}
+
+function bindCsv(){
+  const r = $("#reloadBtn"); if (r) r.onclick = loadAdmin;
+  const b = $("#csvBtn"); if (!b) return;
+  b.onclick = async () => {
+    const head = ["제출시각","1.학번","2.생활패턴설문참여", ...Q.slice(2,9).map((q,i)=>`${i+3}.${q.short}`), "10.불편사항","10.기타","11.우선고려요소","11.기타","12.설문기반배정찬성도","13.개선의견"];
+    const cell = x => `"${String(x ?? "").replace(/"/g,'""')}"`;
+    const lines = rows.map(r => { const a = r.answers||{}; return [r.submittedAt, a.q1, a.q2, a.q3,a.q4,a.q5,a.q6,a.q7,a.q8,a.q9, (a.q10||[]).join(", "), a.q10_etc, a.q11, a.q11_etc, a.q12, a.q13].map(cell).join(","); });
+    const csv = "﻿" + [head.map(cell).join(","), ...lines].join("\r\n");
+    const a = document.createElement("a");
+    a.href = URL.createObjectURL(new Blob([csv], {type:"text/csv;charset=utf-8"}));
+    a.download = "룸메이트_만족도조사_응답.csv"; document.body.appendChild(a); a.click(); a.remove();
+  };
+}
+function alertInline(m){ const s = document.createElement("div"); s.className="note"; s.textContent=m; app.prepend(s); setTimeout(()=>s.remove(),4000); }
+
+// 관리자 화면은 주소 끝에 #admin 을 붙여서 엽니다 (학생에게는 버튼이 보이지 않음)
+function route(){
+  view = location.hash === "#admin" ? "admin" : "survey";
+  const t = $("#adminToggle"); t.hidden = view !== "admin"; t.textContent = "설문 화면";
+  render(); window.scrollTo(0,0);
+}
+$("#adminToggle").onclick = () => { location.hash = ""; };
+window.addEventListener("hashchange", route);
+route();
+</script>
+</body>
+</html>
